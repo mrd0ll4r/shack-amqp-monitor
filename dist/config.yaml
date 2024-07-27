@@ -1,5 +1,15 @@
+# The AMQP/RabbitMQ server to connect to.
 amqp_server_address: "amqp://127.0.0.1:5672/%2f"
+
+# The address on which to publish a Prometheus endpoint.
 prometheus_listen_address: "0.0.0.0:6879"
+
+# The Submarine HTTP API endpoint.
+# This is used to pre-populate a value for each input, until fresh updates arrive.
 submarine_http_endpoint: "http://127.0.0.1:3069"
-update_history_count: 100
+
+# How many events to keep in the history.
+update_history_count: 1000
+
+# The address on which to serve the HTTP API.
 http_server_listen_address: "0.0.0.0:4350"
