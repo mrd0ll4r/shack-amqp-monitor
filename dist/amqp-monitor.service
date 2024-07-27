@@ -1,0 +1,16 @@
+[Unit]
+Description=AMQP Monitor to buffer recent input events and populate Prometheus metrics
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=pi
+Group=pi
+Type=simple
+Restart=always
+RestartSec=3
+WorkingDirectory=/home/pi/amqp_monitor
+ExecStart=/home/pi/amqp_monitor/amqp-monitor
+
+[Install]
+WantedBy=multi-user.target
