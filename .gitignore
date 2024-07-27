@@ -1,0 +1,5 @@
+# JetBrains
+/.idea
+
+# Compiler output
+/target

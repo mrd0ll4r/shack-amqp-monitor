@@ -1,0 +1,31 @@
+[package]
+name = "amqp-monitor"
+version = "0.1.0"
+edition = "2021"
+# We need Rust >=1.65 for std::backtrace
+rust-version = "1.65.0"
+
+[dependencies]
+anyhow = {version="1.0.75", features = []}
+log = { version = "0.4", features = ["std", "serde"] }
+flexi_logger = { version = "0.28" }
+itertools = "0.13.0"
+#alloy = {git = "https://github.com/mrd0ll4r/alloy"}
+alloy = { path = "../alloy" }
+
+# Serde
+serde = { version = "1", features = ["derive"] }
+serde_yaml = "0.9"
+
+# API/Tokio/TCP/HTTP
+tokio = { version = "1", features = ["full"] }
+tokio-util = { version = "0.7", features = ["codec"] }
+futures = "0.3"
+reqwest = {version="0.12", default-features = false, features = ["json","rustls-tls"]}
+warp = "0.3.6"
+
+# Prometheus, metrics
+prometheus_exporter = "0.8.5"
+prometheus = { version = "0.13", features = ["process"] }
+lazy_static = "1"
+systemstat = "0.2"
