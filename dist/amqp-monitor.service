@@ -9,8 +9,8 @@ Group=pi
 Type=simple
 Restart=always
 RestartSec=3
-WorkingDirectory=/home/pi/amqp_monitor
-ExecStart=/home/pi/amqp_monitor/amqp-monitor
+WorkingDirectory=/home/pi/projects/amqp_monitor
+ExecStart=/home/pi/projects/amqp_monitor/amqp-monitor
 
 [Install]
 WantedBy=multi-user.target
