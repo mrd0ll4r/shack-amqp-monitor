@@ -8,8 +8,8 @@ rust-version = "1.65.0"
 [dependencies]
 anyhow = {version="1.0.75", features = []}
 log = { version = "0.4", features = ["std", "serde"] }
-flexi_logger = { version = "0.28" }
-itertools = "0.13.0"
+flexi_logger = { version = "0.29" }
+itertools = "0.14.0"
 #alloy = {git = "https://github.com/mrd0ll4r/alloy"}
 alloy = { path = "../alloy" }
 
