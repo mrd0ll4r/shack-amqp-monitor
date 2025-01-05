@@ -7,7 +7,7 @@ use anyhow::{Context, Result};
 use flexi_logger::{DeferredNow, Logger, LoggerHandle, TS_DASHES_BLANK_COLONS_DOT_BLANK};
 use futures::StreamExt;
 use itertools::Either;
-use log::{debug, error, info, Record};
+use log::{debug, error, info, warn, Record};
 use reqwest::Url;
 use std::collections::{HashMap, VecDeque};
 use std::net::SocketAddr;
@@ -90,8 +90,18 @@ async fn main() -> Result<()> {
     info!("sleeping forever (peacefully)... ");
 
     tokio::select! {
-        _ = event_handler => {}
-        _ = http_server => {}
+        res = event_handler => {
+            let res = res.expect("failed to run event handler task");
+            if let Err(err) = res {
+                error!("unable to receive or handle events: {:?}",err)
+            }
+        }
+        res = http_server => {
+            let res = res.expect("failed to run HTTP server task");
+            if let Err(err) = res {
+                error!("unable to serve HTTP: {:?}",err)
+            }
+        }
     }
 
     Ok(())
@@ -103,7 +113,13 @@ async fn handle_incoming_events(
     state: State,
 ) -> Result<()> {
     while let Some(res) = exchange.next().await {
-        let (rk, msg) = res.context("unable to receive message")?;
+        let (rk, msg) = match res {
+            Ok(res) => res,
+            Err(err) => {
+                error!("unable to receive or decode message, ignoring: {:?}", err);
+                continue;
+            }
+        };
         let alias = rk.alias.as_ref().unwrap();
         let input_type = rk.input_value_type.unwrap();
         debug!("got event for alias {}: {:?}", alias, msg);
@@ -135,6 +151,7 @@ async fn handle_incoming_events(
             .await
             .context("unable to send event")?;
     }
+    warn!("event channel closed");
 
     Ok(())
 }
@@ -362,7 +379,7 @@ fn log_format(
     )
 }
 
-pub fn set_up_logging() -> Result<LoggerHandle, Box<dyn error::Error>> {
+pub fn set_up_logging() -> Result<LoggerHandle, Box<dyn std::error::Error>> {
     let logger = Logger::try_with_env_or_str("info")?
         .use_utc()
         .format(log_format);
